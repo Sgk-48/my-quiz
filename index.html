@@ -10,179 +10,82 @@
     --bg: #0a0f1e;
     --card: #111827;
     --accent: #f59e0b;
-    --accent2: #ef4444;
-    --accent3: #3b82f6;
+    --accent-glow: rgba(245, 158, 11, 0.3);
     --correct: #10b981;
     --wrong: #ef4444;
     --text: #f0f0ff;
-    --muted: #8888aa;
-    --border: rgba(245,158,11,0.22);
+    --border: rgba(245, 158, 11, 0.2);
   }
-  * { margin:0; padding:0; box-sizing:border-box; }
+
   body {
     background: var(--bg);
     color: var(--text);
     font-family: 'Mulish', sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     min-height: 100vh;
-    overflow-x: hidden;
+    background-image: radial-gradient(circle at 50% 50%, #1e293b 0%, #0a0f1e 100%);
   }
-  body::before {
-    content:'';
-    position:fixed; inset:0;
-    background: radial-gradient(ellipse 70% 50% at 10% 20%, rgba(245,158,11,0.12) 0%, transparent 55%),
-                radial-gradient(ellipse 60% 50% at 90% 80%, rgba(59,130,246,0.10) 0%, transparent 55%);
-    pointer-events:none; z-index:0;
-  }
-  .wrapper { position:relative; z-index:1; max-width:840px; margin:0 auto; padding:32px 16px 60px; }
 
-  .header { text-align:center; margin-bottom:40px; }
-  .badge {
-    display:inline-block;
-    background: linear-gradient(135deg,var(--accent),var(--accent2));
-    color:#fff; font-family:'Unbounded',sans-serif; font-size:11px; letter-spacing:2px;
-    padding:6px 18px; border-radius:100px; margin-bottom:18px; text-transform:uppercase;
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 30px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+    width: 100%;
+    max-width: 600px;
+    transition: transform 0.3s ease;
   }
-  h1 {
-    font-family:'Unbounded',sans-serif; font-size:clamp(20px,5vw,38px);
-    font-weight:900; line-height:1.15;
-    background: linear-gradient(135deg, #fff 30%, var(--accent));
-    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
-    margin-bottom:10px;
-  }
-  .subtitle { color:var(--muted); font-size:15px; }
 
-  .progress-wrap { margin-bottom:28px; }
-  .progress-info { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; font-size:13px; color:var(--muted); }
-  .progress-bar { height:6px; background:rgba(255,255,255,0.08); border-radius:10px; overflow:hidden; }
-  .progress-fill { height:100%; background:linear-gradient(90deg,var(--accent),var(--accent2)); border-radius:10px; transition:width .4s ease; }
+  .option {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 16px 20px;
+    border-radius: 16px;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
 
-  .score-strip { display:flex; gap:12px; justify-content:center; margin-bottom:32px; flex-wrap:wrap; }
-  .score-chip { background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:12px; padding:10px 20px; text-align:center; min-width:100px; }
-  .score-chip .val { font-family:'Unbounded',sans-serif; font-size:22px; font-weight:700; }
-  .score-chip .lbl { font-size:11px; color:var(--muted); margin-top:2px; letter-spacing:.5px; text-transform:uppercase; }
-  .val.green { color:var(--correct); }
-  .val.red { color:#ef4444; }
-  .val.yellow { color:var(--accent); }
+  .option:hover {
+    background: rgba(245, 158, 11, 0.1);
+    border-color: var(--accent);
+    transform: translateX(8px);
+    box-shadow: 0 0 15px var(--accent-glow);
+  }
 
-  .q-card {
-    background:var(--card); border:1px solid var(--border);
-    border-radius:20px; padding:32px 28px 28px; margin-bottom:24px;
-    box-shadow:0 8px 40px rgba(0,0,0,0.5); animation: fadeUp .35s ease both;
-  }
-  @keyframes fadeUp {
-    from { opacity:0; transform:translateY(18px); }
-    to   { opacity:1; transform:translateY(0); }
-  }
-  .q-number {
-    font-family:'Unbounded',sans-serif; font-size:11px; letter-spacing:2px;
-    color:var(--accent); text-transform:uppercase; margin-bottom:14px;
-    display:flex; align-items:center; gap:8px;
-  }
-  .q-topic { font-size:11px; background:rgba(245,158,11,0.15); color:var(--accent); padding:3px 10px; border-radius:100px; margin-left:auto; }
-  .q-text { font-size:17px; font-weight:700; line-height:1.55; margin-bottom:22px; }
-
-  .options { display:flex; flex-direction:column; gap:10px; }
-  .opt {
-    display:flex; align-items:center; gap:14px;
-    background:rgba(255,255,255,0.04); border:1.5px solid rgba(255,255,255,0.09);
-    border-radius:14px; padding:13px 18px; cursor:pointer; transition:all .2s ease;
-    font-size:15px; font-weight:600; user-select:none;
-  }
-  .opt:hover:not(.disabled) { border-color:var(--accent); background:rgba(245,158,11,0.10); transform:translateX(4px); }
-  .opt.correct  { border-color:var(--correct); background:rgba(16,185,129,0.18); color:var(--correct); }
-  .opt.wrong    { border-color:#ef4444; background:rgba(239,68,68,0.15); color:#ef4444; }
-  .opt.disabled { cursor:default; }
-  .opt-letter {
-    width:30px; height:30px; flex-shrink:0; border-radius:8px;
-    background:rgba(255,255,255,0.08); display:flex; align-items:center; justify-content:center;
-    font-family:'Unbounded',sans-serif; font-size:12px; font-weight:700;
-  }
-  .opt.correct .opt-letter { background:var(--correct); color:#fff; }
-  .opt.wrong   .opt-letter { background:#ef4444; color:#fff; }
-
-  .feedback { margin-top:16px; padding:13px 16px; border-radius:12px; font-size:14px; font-weight:600; display:none; align-items:center; gap:10px; }
-  .feedback.show { display:flex; animation:fadeUp .25s ease both; }
-  .feedback.ok  { background:rgba(16,185,129,0.15); color:var(--correct); border:1px solid rgba(16,185,129,0.3); }
-  .feedback.err { background:rgba(239,68,68,0.12); color:#ef4444; border:1px solid rgba(239,68,68,0.3); }
-
-  .btn-next {
-    display:block; width:100%; margin-top:20px; padding:16px; border-radius:14px; border:none; cursor:pointer;
-    background:linear-gradient(135deg,var(--accent),var(--accent2));
-    color:#fff; font-family:'Unbounded',sans-serif; font-size:14px; font-weight:700; letter-spacing:.5px;
-    transition: opacity .2s, transform .2s; box-shadow: 0 4px 20px rgba(245,158,11,0.35);
-  }
-  .btn-next:hover { opacity:.9; transform:translateY(-1px); }
-  .btn-next:disabled { opacity:.35; cursor:default; transform:none; }
-
-  #results { display:none; text-align:center; animation:fadeUp .4s ease both; }
-  .result-circle {
-    width:140px; height:140px; border-radius:50%;
-    background:conic-gradient(var(--accent) 0deg, var(--accent2) var(--pct,0deg), rgba(255,255,255,0.07) var(--pct,0deg));
-    display:flex; align-items:center; justify-content:center; margin:0 auto 24px;
-    box-shadow:0 0 40px rgba(245,158,11,0.35);
-  }
-  .result-circle-inner { width:110px; height:110px; border-radius:50%; background:var(--card); display:flex; flex-direction:column; align-items:center; justify-content:center; }
-  .result-pct { font-family:'Unbounded',sans-serif; font-size:28px; font-weight:900; }
-  .result-label { font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; }
-  .result-grade { font-family:'Unbounded',sans-serif; font-size:20px; font-weight:700; margin-bottom:8px; }
-  .result-sub { color:var(--muted); font-size:14px; margin-bottom:32px; }
-  .btn-restart { padding:14px 40px; border-radius:14px; border:2px solid var(--accent); background:transparent; color:var(--accent); font-family:'Unbounded',sans-serif; font-size:13px; font-weight:700; cursor:pointer; transition:.2s; }
-  .btn-restart:hover { background:rgba(245,158,11,0.12); }
-  .review { text-align:left; margin-top:32px; }
-  .review h3 { font-family:'Unbounded',sans-serif; font-size:13px; letter-spacing:1px; color:var(--muted); margin-bottom:16px; text-transform:uppercase; }
-  .review-item { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:16px; margin-bottom:10px; font-size:14px; }
-  .review-item .ri-q { font-weight:700; margin-bottom:6px; }
-  .review-item .ri-correct { color:var(--correct); }
-  .review-item .ri-wrong { color:#ef4444; font-size:13px; }
-
-  @media(max-width:520px) {
-    .q-card { padding:22px 16px 18px; }
-    .q-text { font-size:15px; }
-    .opt { font-size:13px; padding:11px 14px; }
-  }
+  .option.correct { background: var(--correct) !important; color: #000; font-weight: 800; }
+  .option.wrong { background: var(--wrong) !important; color: #fff; }
 </style>
 </head>
 <body>
-<div class="wrapper">
-  <div class="header">
-    <div class="badge">ПМ02 · Электроника и ПК</div>
-    <h1>Тестовые вопросы<br>на проверку знаний</h1>
-    <p class="subtitle">Электроника · Сборка ПК · Диагностика · ИТ-поддержка</p>
-  </div>
 
-  <div id="quiz-area">
-    <div class="progress-wrap">
-      <div class="progress-info">
-        <span id="prog-text">Вопрос 1 из …</span>
-        <span id="prog-pct">0%</span>
-      </div>
-      <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
-    </div>
-    <div class="score-strip">
-      <div class="score-chip"><div class="val green" id="sc-correct">0</div><div class="lbl">Верно</div></div>
-      <div class="score-chip"><div class="val red"   id="sc-wrong">0</div><div class="lbl">Неверно</div></div>
-      <div class="score-chip"><div class="val yellow" id="sc-left">—</div><div class="lbl">Осталось</div></div>
-    </div>
-    <div class="q-card" id="q-card">
-      <div class="q-number"><span id="q-num">Вопрос 1</span><span class="q-topic" id="q-topic"></span></div>
-      <div class="q-text" id="q-text"></div>
-      <div class="options" id="options"></div>
-      <div class="feedback" id="feedback"></div>
-      <button class="btn-next" id="btn-next" disabled onclick="nextQ()">Следующий вопрос →</button>
-    </div>
-  </div>
-
-  <div id="results">
-    <div class="result-circle" id="result-circle">
-      <div class="result-circle-inner">
-        <div class="result-pct" id="res-pct">0%</div>
-        <div class="result-label">Результат</div>
+<div class="container">
+  <div class="card" id="quiz-card">
+    <h1>ПМ02: Электроника</h1>
+    <div class="stats">
+      <div class="stat-item">Вопрос: <span id="q-idx">1</span> / <span id="q-total">0</span></div>
+      <div style="display:flex; gap:10px;">
+        <div class="stat-item stat-correct">✅ <span id="sc-correct">0</span></div>
+        <div class="stat-item stat-wrong">❌ <span id="sc-wrong">0</span></div>
       </div>
     </div>
-    <div class="result-grade" id="res-grade"></div>
-    <div class="result-sub" id="res-sub"></div>
-    <button class="btn-restart" onclick="restartQuiz()">🔄 Пройти заново</button>
-    <div class="review" id="review-list"></div>
+    <div class="progress-container"><div id="progress-bar"></div></div>
+    
+    <div id="game">
+      <div class="question-text" id="q-text">Загрузка...</div>
+      <div class="options" id="q-opts"></div>
+    </div>
+
+    <div class="result-screen" id="result-screen">
+      <div class="grade" id="res-grade"></div>
+      <div id="res-sub"></div>
+      <div class="review-list" id="review-list"></div>
+      <button class="btn-restart" onclick="restartQuiz()">ПОПРОБОВАТЬ СНОВА</button>
+    </div>
   </div>
 </div>
 
@@ -409,143 +312,139 @@ const questions = [
   {topic:"Пайка",q:"Зачем при монтаже SMD-компонентов используется вакуумный пинцет?",opts:["Для аккуратного захвата и позиционирования мелких деталей на плате","Для очистки платы от пыли и мелкого мусора","Для измерения напряжения на контактах детали","Для быстрого охлаждения места пайки","Для нанесения паяльной маски"],ans:0}
 ];
 
-let current = 0, score = 0, wrongCount = 0, answered = false, userAnswers = [];
+let shuffled = [];
+let current = 0;
+let score = 0;
+let wrongCount = 0;
+let answered = false;
+let userAnswers = [];
 
-function shuffle(arr) {
-  for(let i=arr.length-1;i>0;i--){
-    const j=Math.floor(Math.random()*(i+1));
-    [arr[i],arr[j]]=[arr[j],arr[i]];
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
   }
-  return arr;
 }
 
-const shuffled = shuffle([...questions]);
-const total = shuffled.length;
+function initQuiz() {
+  shuffled = [...questions];
+  shuffle(shuffled); // ТЕПЕРЬ ВОПРОСЫ ПЕРЕМЕШИВАЮТСЯ
+  current = 0;
+  score = 0;
+  wrongCount = 0;
+  answered = false;
+  userAnswers = [];
+  
+  document.getElementById('q-total').textContent = shuffled.length;
+  document.getElementById('quiz-card').style.display = 'block';
+  document.getElementById('result-screen').style.display = 'none';
+  document.getElementById('game').style.display = 'block';
+  
+  showQuestion();
+}
 
-document.getElementById('sc-left').textContent = total;
-
-function renderQ() {
+function showQuestion() {
   answered = false;
   const q = shuffled[current];
-  document.getElementById('q-num').textContent = `Вопрос ${current+1}`;
-  document.getElementById('q-topic').textContent = q.topic;
+  document.getElementById('q-idx').textContent = current + 1;
   document.getElementById('q-text').textContent = q.q;
+  document.getElementById('progress-bar').style.width = ((current) / shuffled.length * 100) + '%';
+  
+  const optsBox = document.getElementById('q-opts');
+  optsBox.innerHTML = '';
 
-  const pct = Math.round((current/total)*100);
-  document.getElementById('prog-text').textContent = `Вопрос ${current+1} из ${total}`;
-  document.getElementById('prog-pct').textContent = pct+'%';
-  document.getElementById('progress-fill').style.width = pct+'%';
-  document.getElementById('sc-left').textContent = total-current;
-
-  const opts = document.getElementById('options');
-  opts.innerHTML = '';
-  const letters = ['A','B','C','D','E'];
-  q.opts.forEach((o,i) => {
-    const d = document.createElement('div');
-    d.className = 'opt';
-    d.innerHTML = `<div class="opt-letter">${letters[i]}</div><span>${o}</span>`;
-    d.onclick = () => selectOpt(i, d, q.ans, letters);
-    opts.appendChild(d);
+  // 1. Создаем копию ответов с сохранением их оригинального индекса
+  let optionsToDisplay = q.opts.map((text, i) => {
+    return { text: text, originalIndex: i };
   });
 
-  const fb = document.getElementById('feedback');
-  fb.className = 'feedback';
-  fb.textContent = '';
+  // 2. Перемешиваем варианты ответов
+  shuffle(optionsToDisplay);
 
-  const btn = document.getElementById('btn-next');
-  btn.disabled = true;
-  btn.textContent = current === total-1 ? 'Завершить тест ✓' : 'Следующий вопрос →';
-
-  const card = document.getElementById('q-card');
-  card.style.animation = 'none';
-  card.offsetHeight;
-  card.style.animation = 'fadeUp .35s ease both';
+  // 3. Создаем кнопки
+  optionsToDisplay.forEach((opt) => {
+    const btn = document.createElement('div');
+    btn.className = 'option';
+    btn.textContent = opt.text;
+    // Передаем в checkAns ОРИГИНАЛЬНЫЙ индекс, чтобы проверка сработала верно
+    btn.onclick = () => checkAns(opt.originalIndex, btn);
+    optsBox.appendChild(btn);
+  });
 }
 
-function selectOpt(idx, el, correct, letters) {
+function checkAns(idx, el) {
   if(answered) return;
   answered = true;
+  const q = shuffled[current];
   userAnswers.push(idx);
 
-  const allOpts = document.querySelectorAll('.opt');
-  allOpts.forEach(o => o.classList.add('disabled'));
-
-  const fb = document.getElementById('feedback');
-  if(idx === correct) {
-    el.classList.add('correct');
-    el.querySelector('.opt-letter').style.background='var(--correct)';
-    fb.className='feedback ok show';
-    fb.innerHTML='✅ Правильно!';
+  if(idx === q.ans) {
     score++;
+    el.classList.add('correct');
     document.getElementById('sc-correct').textContent = score;
   } else {
-    el.classList.add('wrong');
-    allOpts[correct].classList.add('correct');
-    fb.className='feedback err show';
-    fb.innerHTML=`❌ Неверно. Правильный ответ: <strong>${letters[correct]}) ${shuffled[current].opts[correct]}</strong>`;
     wrongCount++;
+    el.classList.add('wrong');
     document.getElementById('sc-wrong').textContent = wrongCount;
+    
+    // ИСПРАВЛЕНИЕ: Ищем правильную кнопку по тексту, а не по номеру
+    const children = document.getElementById('q-opts').children;
+    const correctText = q.opts[q.ans]; 
+    
+    for (let child of children) {
+      if (child.textContent === correctText) {
+        child.classList.add('correct');
+      }
+    }
   }
-  document.getElementById('btn-next').disabled = false;
-}
 
-function nextQ() {
-  current++;
-  if(current >= total) { showResults(); } else { renderQ(); }
+  setTimeout(() => {
+    current++;
+    if(current < shuffled.length) {
+      showQuestion();
+    } else {
+      showResults();
+    }
+  }, 1200);
 }
 
 function showResults() {
-  document.getElementById('quiz-area').style.display='none';
-  const res = document.getElementById('results');
-  res.style.display='block';
+  document.getElementById('game').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'block';
+  document.getElementById('progress-bar').style.width = '100%';
 
-  const pct = Math.round((score/total)*100);
-  document.getElementById('res-pct').textContent = pct+'%';
+  let grade = '';
+  let sub = '';
+  const total = shuffled.length;
+  const percent = (score / total) * 100;
 
-  const deg = Math.round((pct/100)*360);
-  document.getElementById('result-circle').style.setProperty('--pct', deg+'deg');
-
-  let grade, sub;
-  if(pct>=90){ grade='🏆 Отлично!'; sub='Превосходный результат! Вы отлично знаете материал.'; }
-  else if(pct>=75){ grade='👍 Хорошо'; sub='Хороший результат. Повторите несколько тем для уверенности.'; }
-  else if(pct>=60){ grade='📚 Удовлетворительно'; sub='Материал усвоен частично. Рекомендуем повторить лекции.'; }
-  else { grade='⚠️ Нужно повторить'; sub='Результат ниже нормы. Обязательно перечитайте все лекции.'; }
+  if(percent === 100) { grade='🔥 Отлично!'; sub='Вы настоящий мастер электроники!'; }
+  else if(percent >= 70) { grade='📚 Хорошо'; sub='Материал усвоен достойно.'; }
+  else { grade='⚠️ Попробуй еще'; sub='Стоит повторить теорию.'; }
 
   document.getElementById('res-grade').textContent = grade;
-  document.getElementById('res-sub').textContent = `${sub} Правильных ответов: ${score} из ${total}.`;
+  document.getElementById('res-sub').textContent = `Ваш результат: ${score} из ${total}.`;
 
   const rv = document.getElementById('review-list');
-  rv.innerHTML = '<h3>Разбор ошибок</h3>';
-  let hasErrors = false;
-  shuffled.forEach((q,i) => {
+  rv.innerHTML = '<h3>Разбор:</h3>';
+  shuffled.forEach((q, i) => {
     const ua = userAnswers[i];
-    if(ua !== q.ans) {
-      hasErrors = true;
-      const d = document.createElement('div');
-      d.className='review-item';
-      d.innerHTML=`<div class="ri-q">${i+1}. ${q.q}</div>
-        <div class="ri-correct">✅ Правильно: ${q.opts[q.ans]}</div>
-        <div class="ri-wrong">❌ Ваш ответ: ${q.opts[ua]}</div>`;
-      rv.appendChild(d);
-    }
+    const item = document.createElement('div');
+    item.className = 'review-item';
+    item.innerHTML = `<div class="ri-q">${i+1}. ${q.q}</div>
+      <div class="${ua === q.ans ? 'ri-correct' : 'ri-wrong'}">
+        ${ua === q.ans ? '✅ Верно' : '❌ Ошибка. Правильно: ' + q.opts[q.ans]}
+      </div>`;
+    rv.appendChild(item);
   });
-  if(!hasErrors) {
-    rv.innerHTML += '<p style="color:var(--correct);font-weight:700;margin-top:12px;">🎉 Все ответы верны! Ошибок нет.</p>';
-  }
 }
 
 function restartQuiz() {
-  current=0; score=0; wrongCount=0; answered=false; userAnswers=[];
-  shuffle(shuffled);
-  document.getElementById('sc-correct').textContent='0';
-  document.getElementById('sc-wrong').textContent='0';
-  document.getElementById('sc-left').textContent=total;
-  document.getElementById('results').style.display='none';
-  document.getElementById('quiz-area').style.display='block';
-  renderQ();
+  initQuiz();
 }
 
-renderQ();
+window.onload = initQuiz;
 </script>
+
 </body>
 </html>
